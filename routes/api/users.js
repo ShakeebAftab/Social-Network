@@ -5,6 +5,9 @@ const jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
 const router = express.Router();
 
+//  Middleware
+const auth = require('../../middleware/auth');
+
 //  Modals
 const User = require('../../modals/User');
 
@@ -120,5 +123,15 @@ router.post(
         }
     }
 );
+
+// TODO // Notification Handler
+//  PRIVATE GET api/users/notifications :: GET USER NOTIFICATIONS
+// router.get('/notifications', auth, async (req, res) => {
+//     try {
+//         const notifications = await Notifications.
+//     } catch (error) {
+
+//     }
+// })
 
 module.exports = router;
