@@ -8,7 +8,6 @@ const auth = require('../../middleware/auth');
 //  Modals
 const User = require('../../modals/User');
 const Post = require('../../modals/Post');
-const { compareSync } = require('bcryptjs');
 
 //  PRIVATE GET api/posts :: GET ALL POSTS
 router.get('/', auth, async (req, res) => {
@@ -83,7 +82,7 @@ router.put(
             res.status(400).json({ error: errors.array() });
         }
         try {
-            const user = await User.findById(req.user.id);
+            const user = await User.findById(req.user.id).select('-password');
             const post = await Post.findById(req.params.postId);
             const newComment = {
                 user: req.user.id,
@@ -105,19 +104,20 @@ router.delete('/comments/:postId/:commentId', auth, async (req, res) => {
     try {
         const post = await Post.findById(req.params.postId);
         let isMatch = false;
-        post.comments.map((comment) => {
-            if (comment.user.toString() == req.user.id) {
+        let commentIndex;
+        post.comments.map((comment, index) => {
+            if (
+                comment.user.toString() == req.user.id &&
+                comment.id == req.params.commentId
+            ) {
                 isMatch = true;
+                commentIndex = index;
             }
         });
         if (!isMatch) {
             return res.status(400).json({ msg: 'Access Denied' });
         }
-        const updatedComments = [];
-        post.comments.map((comment) => {
-            comment.id != req.params.commentId && updatedComments.push(comment);
-        });
-        post.comments = updatedComments;
+        post.comments.splice(commentIndex, 1);
         await post.save();
         res.json(post.comments);
     } catch (error) {
@@ -178,5 +178,70 @@ router.delete('/unlike/:postId', auth, async (req, res) => {
         res.status(500).send(`Server Error`);
     }
 });
+
+//  PRIVATE PATCH api/posts/:postId :: EDIT A POST
+router.patch(
+    '/:postId',
+    [auth, [check('body', 'Post body is required').not().isEmpty()]],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(400).json({ error: errors.array() });
+        }
+        try {
+            const post = await Post.findById(req.params.postId);
+            if (!post) {
+                return res.status(404).json({ msg: 'Post not found!' });
+            }
+            if (post.user.toString() != req.user.id) {
+                return res.status(400).json({ msg: 'Access Denied' });
+            }
+            post.body = req.body.body;
+            await post.save();
+            res.json(post);
+        } catch (error) {
+            console.error(error.message);
+            res.status(500).send(`Server Error`);
+        }
+    }
+);
+
+//  PRIVATE PATCH api/posts/comments/:postId/:commentId :: EDIT A COMMENT
+router.patch(
+    '/comments/:postId/:commentId',
+    [auth, [check('body', 'Comment body is required').not().isEmpty()]],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(400).json({ error: errors.array() });
+        }
+        try {
+            const post = await Post.findById(req.params.postId);
+            if (!post) {
+                return res.status(404).json({ msg: 'Post not found!' });
+            }
+            let isMatch = false;
+            let commentIndex;
+            post.comments.map((comment, index) => {
+                if (
+                    comment.user.toString() == req.user.id &&
+                    comment.id == req.params.commentId
+                ) {
+                    isMatch = true;
+                    commentIndex = index;
+                }
+            });
+            if (!isMatch) {
+                return res.status(400).json({ msg: 'Access Denied' });
+            }
+            post.comments[commentIndex].body = req.body.body;
+            await post.save();
+            res.json(post.comments);
+        } catch (error) {
+            console.error(error.message);
+            res.status(500).send(`Server Error`);
+        }
+    }
+);
 
 module.exports = router;
