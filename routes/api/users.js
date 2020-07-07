@@ -10,6 +10,7 @@ const auth = require('../../middleware/auth');
 
 //  Modals
 const User = require('../../models/User');
+const Post = require('../../models/Post');
 const Notification = require('../../models/Notification');
 
 //  PUBLIC POST api/user/signup :: ADD NEW USER
@@ -137,6 +138,35 @@ router.get('/notifications', auth, async (req, res) => {
             );
         });
         res.json(userNotifications);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send(`Server Error`);
+    }
+});
+
+//  PRIVATE GET api/user/likes :: GET USER LIKES
+router.get('/likes', auth, async (req, res) => {
+    try {
+        const posts = await Post.find().sort({ date: -1 });
+        const userLikes = [];
+        posts.map((post) => {
+            post.likes.map(
+                (like) =>
+                    like.user.toString() == req.user.id && userLikes.push(post)
+            );
+        });
+        res.json(userLikes);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send(`Server Error`);
+    }
+});
+
+//  PRIVATE GET api/users/posts :: GET USER POSTS
+router.get('/posts', auth, async (req, res) => {
+    try {
+        const posts = await Post.find({ user: req.user.id }).sort({ date: -1 });
+        res.json(posts);
     } catch (error) {
         console.error(error.message);
         res.status(500).send(`Server Error`);
