@@ -6,8 +6,9 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 
 //  Modals
-const User = require('../../modals/User');
-const Post = require('../../modals/Post');
+const User = require('../../models/User');
+const Post = require('../../models/Post');
+const Notification = require('../../models/Notification');
 
 //  PRIVATE GET api/posts :: GET ALL POSTS
 router.get('/', auth, async (req, res) => {
@@ -89,7 +90,22 @@ router.put(
                 name: user.name,
                 body: req.body.body,
             };
+            const gatherReceivers = [post.user.toString()];
+            post.comments.map(
+                (comment) =>
+                    comment.user.toString() != req.user.id &&
+                    gatherReceivers.push(comment.user.toString())
+            );
+            const receivers = [...new Set(gatherReceivers)];
+            const newNotification = new Notification({
+                post: req.params.postId,
+                postName: post.name,
+                name: user.name,
+                type: true,
+                receivers,
+            });
             post.comments.unshift(newComment);
+            await newNotification.save();
             await post.save();
             res.json(post.comments);
         } catch (error) {
@@ -130,6 +146,7 @@ router.delete('/comments/:postId/:commentId', auth, async (req, res) => {
 router.put('/likes/:postId', auth, async (req, res) => {
     try {
         const post = await Post.findById(req.params.postId);
+        const user = await User.findById(req.user.id).select('-password');
         if (!post) {
             res.status(400).json({ msg: 'Post not found!' });
         }
@@ -142,7 +159,23 @@ router.put('/likes/:postId', auth, async (req, res) => {
         const newLike = {
             user: req.user.id,
         };
+
+        const gatherReceivers = [post.user.toString()];
+        post.likes.map(
+            (like) =>
+                like.user.toString() != req.user.id &&
+                gatherReceivers.push(like.user.toString())
+        );
+        const receivers = [...new Set(gatherReceivers)];
+        const newNotification = new Notification({
+            post: req.params.postId,
+            postName: post.name,
+            name: user.name,
+            type: false,
+            receivers,
+        });
         post.likes.unshift(newLike);
+        await newNotification.save();
         await post.save();
         res.json(post.likes);
     } catch (error) {

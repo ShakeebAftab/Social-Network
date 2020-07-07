@@ -9,7 +9,7 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 
 //  Modals
-const User = require('../../modals/User');
+const User = require('../../models/User');
 
 //  PUBLIC POST api/user/signup :: ADD NEW USER
 router.post(
