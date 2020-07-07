@@ -1,0 +1,334 @@
+Total endpoints: 10
+    /api/posts :: GET
+    /api/posts/:postId :: GET
+    /api/posts :: POST
+    /api/posts/comments/:postId :: PUT
+    /api/posts/likes/:postId :: PUT
+    /api/posts/:postId :: PATCH
+    /api/posts/comments/:postId/:commentId :: PATCH
+    /api/posts/unlike/:postId :: DELETE
+    /api/posts/:postId :: DELETE
+    /api/posts/comments/:postId/:commentId :: DELETE
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+***Endpoints used in example are not complete :: example endpoint that is /signup in example is actually ${WHERE EVER THE API IS HOSTED}/api/users/signup
+***Parameters need to be exact name to pass the tests***
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+PRIVATE ROUTE ERRORS :: 
+    Token Errors :: Invalid JWT Token || Access Denied
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/   route requires no Parameters or Params
+
+Route is Private 
+Route is used to get all the posts from the database
+response will be Array of objects containing post documents
+
+example with axios::
+    const getPosts = async () => {
+        try {
+            const res = await axios({
+                method: 'GET',
+                url: '/'
+            }
+                const data = res.data
+            }catch (error) {
+                console.log(error)
+            })
+        }
+    }
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        Potentional Errors
+            inherits PRIVATE ROUTE ERRORS
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/:postId   route requires no Parameters :: Param of postId is required
+
+Route is Private 
+Route is used to get one post from the database using postId send in Params
+response will be post document
+
+example with axios::
+    const getPost = async () => {
+        try {
+            const res = await axios({
+                method: 'GET',
+                url: '/:postId'
+            }
+                const data = res.data
+            }catch (error) {
+                console.log(error)
+            })
+        }
+    }
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        Potentional Errors ::
+            Wrong postId :: Error = "Post not found!" :: Status = "400"
+            inherits PRIVATE ROUTE ERRORS
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/   route requires 1 Parameter and no params
+    body: String
+
+Route is Private 
+Route is used to Create new Post
+response will be post document
+
+example with axios::
+    const getPost = async () => {
+        try {
+            const res = await axios({
+                method: 'POST',
+                url: '/',
+                data: {
+                    body: "Example Post Body"
+                }
+            }
+                const data = res.data
+            }catch (error) {
+                console.log(error)
+            })
+        }
+    }
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        Potentional Errors ::
+            Wrong postId :: Error = "Post not found!" :: Status = "400"
+            inherits PRIVATE ROUTE ERRORS
+            other Errors include empty check for parameters ::
+            Error :: = "ParameterName is required"
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/comments/:postId route requires 1 parameter and 1 Param
+    body: String (Body)
+    postId: (Param)
+
+Route is Private 
+Route is used to Create new comment
+response will be all comments in that post document
+
+example with axios::
+    const newComment = async () => {
+        try {
+            const res = await axios({
+                method: 'PUT',
+                url: '/comments/:postId',
+                data: {
+                    body: "Example Comment Body"
+                }
+            }
+                const data = res.data
+            }catch (error) {
+                console.log(error)
+            })
+        }
+    }
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        Potentional Errors ::
+            Wrong postId :: Error = "Post not found!" :: Status = "400"
+            inherits PRIVATE ROUTE ERRORS
+            other Errors include empty check for parameters ::
+            Error :: = "ParameterName is required"
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/likes/:postId route requires no Parameters :: Route requires one Parameter
+    postId: (param)
+
+Route is Private 
+Route is used to like a post
+response will be all likes in that post document
+
+example with axios::
+    const newLike = async () => {
+        try {
+            const res = await axios({
+                method: 'PUT',
+                url: '/likes/:postId'
+            }
+                const data = res.data
+            }catch (error) {
+                console.log(error)
+            })
+        }
+    }
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        Potentional Errors ::
+            Wrong postId :: Error = "Post not found!" :: Status = "400"
+            inherits PRIVATE ROUTE ERRORS
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/:postId route requires 1 parameters :: Route requires 1 params
+    body: String (Body)
+    postId: (Params)
+
+Route is Private 
+Route is used to Edit Post
+response will be post document
+
+example with axios::
+    const editComment = async () => {
+        try {
+            const res = await axios({
+                method: 'PATCH',
+                url: '/:postId',
+                data: {
+                    body: "Example Post Body"
+                }
+            }
+                const data = res.data
+            }catch (error) {
+                console.log(error)
+            })
+        }
+    }
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        Potentional Errors ::
+            Wrong postId :: Error = "Post not found!" :: Status = "400"
+            inherits PRIVATE ROUTE ERRORS
+            other Errors include empty check for parameters ::
+            Error :: = "ParameterName is required"
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/comments/:postId/:commentId route requires 1 parameters :: Route requires 1 params
+    body: String (Body)
+    postId: (Params)
+
+Route is Private 
+Route is used to Edit comment
+response will be all comments in post document
+
+example with axios::
+    const editComment = async () => {
+        try {
+            const res = await axios({
+                method: 'PATCH',
+                url: 'comments/:postId/:commentId',
+                data: {
+                    body: "Example Comment Body"
+                }
+            }
+                const data = res.data
+            }catch (error) {
+                console.log(error)
+            })
+        }
+    }
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        Potentional Errors ::
+            Wrong postId :: Error = "Post not found!" :: Status = "400"
+            inherits PRIVATE ROUTE ERRORS
+            other Errors include empty check for parameters ::
+            Error :: = "ParameterName is required"
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/unlike/:postId route requires no Parameters :: Route requires 1 params
+    postId: (Params)
+
+Route is Private 
+Route is used to unLike a post/ Delete a like on post
+response will be all likes in post document
+
+example with axios::
+    const unLikePost = async () => {
+        try {
+            const res = await axios({
+                method: 'DELETE',
+                url: '/unlike/:postId',
+            }
+                const data = res.data
+            }catch (error) {
+                console.log(error)
+            })
+        }
+    }
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        Potentional Errors ::
+            Wrong postId :: Error = "Post not found!" :: Status = "400"
+            If post was never liked :: Error = "Post was never liked" :: Status = "400"
+            inherits PRIVATE ROUTE ERRORS
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/:postId route requires no Parameters :: Router requires 1 param
+    postid: (Params)
+
+Route is Private 
+Route is used to delete a post
+response will be string :: "Post Removed"
+
+example with axios::
+    const deletePost = async () => {
+        try {
+            const res = await axios({
+                method: 'DELETE',
+                url: '/:postId',
+            }
+                const data = res.data
+            }catch (error) {
+                console.log(error)
+            })
+        }
+    }
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        Potentional Errors ::
+            Wrong postId :: Error = "Post not found!" :: Status = "400"
+            inherits PRIVATE ROUTE ERRORS
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/comments/:postId/:commentId route requires no Parameters :: Route requires 2 params
+    postId: (Params)
+    commentId: (Params)
+
+Route is Private 
+Route is used to delete a comment
+response will be Array of comment objects in that post document
+
+example with axios::
+    const deleteComment = async () => {
+        try {
+            const res = await axios({
+                method: 'DELETE',
+                url: 'comments/:postId/:commentId',
+            }
+                const data = res.data
+            }catch (error) {
+                console.log(error)
+            })
+        }
+    }
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        Potentional Errors ::
+            inherits PRIVATE ROUTE ERRORS
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------

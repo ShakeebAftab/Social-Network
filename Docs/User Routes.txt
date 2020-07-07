@@ -1,0 +1,163 @@
+Total endpoints: 5
+    /api/users/signup :: POST
+    /api/users/signin :: POST
+    /api/users/notifications :: GET
+    /api/users/likes :: GET
+    /api/users/posts :: GET
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+***Endpoints used in example are not complete :: example endpoint that is /signup in example is actually ${WHERE EVER THE API IS HOSTED}/api/users/signup
+***Parameters need to be exact name to pass the tests***
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+PRIVATE ROUTE ERRORS :: 
+    Token Errors :: Invalid JWT Token || Access Denied
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+
+/signup route requires 4 parameters in body (json format)
+    firstName : String
+    lastName : String
+    email : String
+    password : String
+
+Route is Public
+Route is used to add a new user in the database 
+response will be JSON WEB TOKEN
+
+example with axios::
+    const signUpUser = async () => {
+        try {
+            const res = await axios({
+                method: 'POST',
+                url: '/signup',
+                data: {
+                    firstName: 'Jhon',
+                    lastName: 'Doe'
+                    email: 'jhondoe@example.com'
+                    password: 'examplePassword'
+                } 
+            } 
+                const data = res.data
+            }catch (error) {
+                console.log(error)
+            })
+        }
+    }
+
+    Potentional Errors :: 
+        If user already exists :: Error = "User already exists" :: Status = "400"
+        other Errors include empty check for parameters ::
+            Error :: = "ParameterName is required" 
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/signin route requires 2 parameters in body (json format)
+    email : String
+    password : String
+
+Route is Public
+Route is used to sign in user whose already registered 
+response will be JSON WEB TOKEN
+
+example with axios::
+    const signInUser = async () => {
+        try {
+            const res = await axios({
+                method: 'POST',
+                url: '/signin',
+                data: {
+                    email: 'jhondoe@example.com'
+                    password: 'examplePassword'
+                } 
+            }
+                const data = res.data
+            }catch (error) {
+                console.log(error)
+            })
+        }
+    }
+
+Potentional Errors
+    if User does not exist :: Error = "User dose not exist" :: Status = "400"
+        other Errors include empty check for parameters ::
+            Error :: = "ParameterName is required"
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/notifications Route requires no Parameters
+
+Route is Private
+Route is used to get all notifications of the user
+response will be Array of objects containing notifications documents
+
+example with axios::
+    const getUserNotifications = async () => {
+        try {
+            const res = await axios({
+                method: 'GET',
+                url: '/notifications'
+            }
+                const data = res.data
+            }catch (error) {
+                console.log(error)
+            })
+        }
+    }
+
+    Potentional Errors
+        inherits PRIVATE ROUTE ERRORS
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/posts Route requires no Parameters
+
+Route is Private
+Route is used to get all posts of the user
+response will be Array of objects containing post documents
+
+example with axios::
+    const getUserPosts = async () => {
+        try {
+            const res = await axios({
+                method: 'GET',
+                url: '/posts'
+            }
+                const data = res.data
+            }catch (error) {
+                console.log(error)
+            })
+        }
+    }
+
+    Potentional Errors
+        inherits PRIVATE ROUTE ERRORS
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/likes Route requires no Parameters
+
+Route is Private
+Route is used to get all likes of the user
+response will be Array of objects containing like documents
+
+example with axios::
+    const getUserLikes = async () => {
+        try {
+            const res = await axios({
+                method: 'GET',
+                url: '/likes'
+            }
+                const data = res.data
+            }catch (error) {
+                console.log(error)
+            })
+        }
+    }
+
+    Potentional Errors
+        inherits PRIVATE ROUTE ERRORS
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
