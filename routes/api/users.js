@@ -10,6 +10,7 @@ const auth = require('../../middleware/auth');
 
 //  Modals
 const User = require('../../models/User');
+const Notification = require('../../models/Notification');
 
 //  PUBLIC POST api/user/signup :: ADD NEW USER
 router.post(
@@ -124,14 +125,22 @@ router.post(
     }
 );
 
-// TODO // Notification Handler
 //  PRIVATE GET api/users/notifications :: GET USER NOTIFICATIONS
-// router.get('/notifications', auth, async (req, res) => {
-//     try {
-//         const notifications = await Notifications.
-//     } catch (error) {
-
-//     }
-// })
+router.get('/notifications', auth, async (req, res) => {
+    try {
+        const notifications = await Notification.find().sort({ date: -1 });
+        const userNotifications = [];
+        notifications.map((notification) => {
+            notification.receivers.map(
+                (user) =>
+                    user == req.user.id && userNotifications.push(notification)
+            );
+        });
+        res.json(userNotifications);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send(`Server Error`);
+    }
+});
 
 module.exports = router;
