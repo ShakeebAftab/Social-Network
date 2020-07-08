@@ -1,0 +1,27 @@
+/api/posts/likes/{postId}:
+  put:
+    description: Create new like (Protected Route)
+    summary: Create new like
+    parameters:
+      - in: path
+        name: postId
+        description: The id of the post you wanna add like to
+        required: true
+        schema:
+          type: string
+    security:
+      - JWT: []
+    responses:
+      "200":
+        description: The Array of objects with likes on that post
+      "401":
+        description: Invalid Token or Access Denied
+      "400":
+        description: If post is already liked or post does not exist
+      "500":
+        description: Server Error
+securityDefinitions:
+  JWT:
+    type: "apiKey"
+    in: "header"
+    name: "x-auth-token"

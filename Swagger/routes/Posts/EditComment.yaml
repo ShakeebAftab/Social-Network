@@ -1,0 +1,42 @@
+/api/posts/comments/{postId}/{commentId}:
+  patch:
+    description: Edit Comment (Protected Route)
+    summary: Edit Comment
+    parameters:
+      - in: path
+        name: postId
+        description: The id of the post you wanna edit comment on
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: commentId
+        description: The id of the comment you wanna edit
+        required: true
+        schema:
+          type: string
+      - in: body
+        name: Comment Body
+        description: The comment of the post
+        required: true
+        schema:
+          type: object
+          example: { body: "This is a Edited Comment body" }
+    security:
+      - JWT: []
+    responses:
+      "200":
+        description: Array of objects with comments of that post
+      "401":
+        description: Invalid Token or Access Denied
+      "400":
+        description: Missed required field in the body
+      "404":
+        description: Post not found!
+      "500":
+        description: Server Error
+securityDefinitions:
+  JWT:
+    type: "apiKey"
+    in: "header"
+    name: "x-auth-token"

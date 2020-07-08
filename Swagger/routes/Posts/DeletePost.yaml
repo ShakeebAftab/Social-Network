@@ -1,0 +1,29 @@
+/api/posts/{postId}:
+  delete:
+    description: Delete Post (Protected Route)
+    summary: Delete Post
+    parameters:
+      - in: path
+        name: postId
+        description: The id of the post you wanna delete
+        required: true
+        schema:
+          type: string
+    security:
+      - JWT: []
+    responses:
+      "200":
+        description: Post Removed
+      "401":
+        description: Invalid Token or Access Denied
+      "400":
+        description: Access Denied
+      "404":
+        description: Post not found!
+      "500":
+        description: Server Error
+securityDefinitions:
+  JWT:
+    type: "apiKey"
+    in: "header"
+    name: "x-auth-token"

@@ -1,0 +1,29 @@
+/api/posts/unlike/{postId}:
+  delete:
+    description: Delete like from a post (Protected Route)
+    summary: Delete like from a post
+    parameters:
+      - in: path
+        name: postId
+        description: The id of the post you wanna add like to
+        required: true
+        schema:
+          type: string
+    security:
+      - JWT: []
+    responses:
+      "200":
+        description: The Array of objects with likes on that post
+      "400":
+        description: If post is never liked or post does not exist
+      "401":
+        description: Invalid Token or Access Denied
+      "404":
+        description: Post not found!
+      "500":
+        description: Server Error
+securityDefinitions:
+  JWT:
+    type: "apiKey"
+    in: "header"
+    name: "x-auth-token"

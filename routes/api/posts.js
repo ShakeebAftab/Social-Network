@@ -52,10 +52,12 @@ router.get('/:postId', auth, async (req, res) => {
         const post = await Post.findById(req.params.postId);
         post
             ? res.json({ post })
-            : res.status(404).json({ msg: 'Post was not found' });
+            : res.status(404).json({ msg: 'Post not found!' });
     } catch (error) {
         console.error(error.message);
-        res.status(500).send(`Server Error`);
+        error.kind == 'ObjectId'
+            ? res.status.json({ msg: 'Post not found!' })
+            : res.status(500).send(`Server Error`);
     }
 });
 
@@ -63,13 +65,18 @@ router.get('/:postId', auth, async (req, res) => {
 router.delete('/:postId', auth, async (req, res) => {
     try {
         const post = await Post.findById(req.params.postId);
+        if (!post) {
+            return res.status(404).json({ msg: 'Post not found!' });
+        }
         post.user.toString() != req.user.id
             ? res.status(400).json({ msg: 'Access denied' })
             : await post.remove(),
             res.json({ msg: 'Post Removed' });
     } catch (error) {
         console.error(error.message);
-        res.status(500).send(`Server Error`);
+        error.kind == 'ObjectId'
+            ? res.status(404).json({ msg: 'Post not found!' })
+            : res.status(500).send(`Server Error`);
     }
 });
 
@@ -120,6 +127,9 @@ router.put(
 router.delete('/comments/:postId/:commentId', auth, async (req, res) => {
     try {
         const post = await Post.findById(req.params.postId);
+        if (!post) {
+            return res.status(404).json({ msg: 'Post not found!' });
+        }
         let isMatch = false;
         let commentIndex;
         post.comments.map((comment, index) => {
@@ -139,7 +149,9 @@ router.delete('/comments/:postId/:commentId', auth, async (req, res) => {
         res.json(post.comments);
     } catch (error) {
         console.log(error.message);
-        res.status(500).send(`Server Error`);
+        error.kind == 'ObjectId'
+            ? res.status(404).json({ msg: 'Post not found!' })
+            : res.status(500).send(`Server Error`);
     }
 });
 
@@ -210,7 +222,9 @@ router.delete('/unlike/:postId', auth, async (req, res) => {
         res.json(post.likes);
     } catch (error) {
         console.error(error.message);
-        res.status(500).send(`Server Error`);
+        error.kind == 'ObjectId'
+            ? res.status(404).json({ msg: 'Post not found!' })
+            : res.status(500).send(`Server Error`);
     }
 });
 

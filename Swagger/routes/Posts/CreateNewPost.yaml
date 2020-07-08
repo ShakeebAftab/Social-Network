@@ -1,0 +1,28 @@
+/api/posts:
+  post:
+    description: Create new Post (Protected Route)
+    summary: Create new Post
+    parameters:
+      - in: body
+        name: Post Body
+        description: The body of the post
+        required: true
+        schema:
+          type: object
+          example: { body: "This is a post body" }
+    security:
+      - JWT: []
+    responses:
+      "200":
+        description: The new post created will be the response
+      "401":
+        description: Invalid Token or Access Denied
+      "400":
+        description: Missed required field in the body
+      "500":
+        description: Server Error
+securityDefinitions:
+  JWT:
+    type: "apiKey"
+    in: "header"
+    name: "x-auth-token"

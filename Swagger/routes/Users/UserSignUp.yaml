@@ -1,0 +1,25 @@
+/api/users/signup:
+  post:
+    description: Create a new user
+    summary: Create a new user
+    parameters:
+      - in: body
+        name: body
+        required: true
+        description: To Create User firstName lastName email password fields are required
+        schema:
+          type: object
+          example:
+            {
+              firstName: Jhon,
+              lastName: Doe,
+              email: jhondoe@gmail.com,
+              password: somePassword,
+            }
+    responses:
+      "200":
+        description: JWT Token in response
+      "400":
+        description: Error occurs if required field is missed or email is already registered
+      "500":
+        description: Server Error

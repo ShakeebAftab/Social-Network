@@ -9,6 +9,11 @@ app.use(express.json({ extended: false }));
 const connectDB = require('./config/db');
 connectDB();
 
+//  Swagger Setup
+const swaggerUI = require('swagger-ui-express');
+const swaggerDocs = require('./Swagger/swagger');
+app.use('/api/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+
 //  Routes
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/posts', require('./routes/api/posts'));

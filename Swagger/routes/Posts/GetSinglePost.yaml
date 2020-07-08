@@ -1,0 +1,27 @@
+/api/posts/{postId}:
+  get:
+    description: Get Single post with the given post id (Protected Route)
+    summary: Get Single post with the given post id
+    parameters:
+      - in: path
+        name: postId
+        description: Post Id of the post you wanna retrieve
+        required: true
+        schema:
+          type: string
+    security:
+      - JWT: []
+    responses:
+      "200":
+        description: Single post with the given post id
+      "401":
+        description: Invalid Token or Access Denied
+      "404":
+        description: "Post not found!"
+      "500":
+        description: Server Error
+securityDefinitions:
+  JWT:
+    type: "apiKey"
+    in: "header"
+    name: "x-auth-token"

@@ -1,0 +1,18 @@
+/api/users/posts:
+  get:
+    description: Get all of the posts of the user (Protected Route)
+    summary: Get all of the posts of the user
+    security:
+      - JWT: []
+    responses:
+      "200":
+        description: Array of objects with user posts
+      "401":
+        description: Invalid Token or Access Denied
+      "500":
+        description: Server Error
+securityDefinitions:
+  JWT:
+    type: "apiKey"
+    in: "header"
+    name: "x-auth-token"

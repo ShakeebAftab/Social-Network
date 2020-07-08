@@ -1,0 +1,34 @@
+/api/posts/comments/{postId}:
+  put:
+    description: Create new comment (Protected Route)
+    summary: Create new comment
+    parameters:
+      - in: body
+        name: Comment Body
+        description: The body of the comment
+        required: true
+        schema:
+          type: object
+          example: { body: "This is a comment body" }
+      - in: path
+        name: postId
+        description: The id of the post you wanna add comment to
+        required: true
+        schema:
+          type: string
+    security:
+      - JWT: []
+    responses:
+      "200":
+        description: Array of objects with comments of that post
+      "401":
+        description: Invalid Token or Access Denied
+      "400":
+        description: Missed required field in the body
+      "500":
+        description: Server Error
+securityDefinitions:
+  JWT:
+    type: "apiKey"
+    in: "header"
+    name: "x-auth-token"
