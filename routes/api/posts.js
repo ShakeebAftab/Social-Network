@@ -83,8 +83,10 @@ router.put(
             res.status(400).json({ error: errors.array() });
         }
         try {
-            const user = await User.findById(req.user.id).select('-password');
-            const post = await Post.findById(req.params.postId);
+            const [user, post] = await Promise.all([
+                User.findById(req.user.id).select('-password'),
+                Post.findById(req.params.postId),
+            ]);
             const newComment = {
                 user: req.user.id,
                 name: user.name,
@@ -105,8 +107,7 @@ router.put(
                 receivers,
             });
             post.comments.unshift(newComment);
-            await newNotification.save();
-            await post.save();
+            await Promise.all([newNotification.save(), post.save()]);
             res.json(post.comments);
         } catch (error) {
             console.error(error.message);
@@ -142,11 +143,13 @@ router.delete('/comments/:postId/:commentId', auth, async (req, res) => {
     }
 });
 
-//  PRIVATE PUT api/posts/like/:postId :: LIKE A POST
+//  PRIVATE PUT api/posts/likes/:postId :: LIKE A POST
 router.put('/likes/:postId', auth, async (req, res) => {
     try {
-        const post = await Post.findById(req.params.postId);
-        const user = await User.findById(req.user.id).select('-password');
+        const [post, user] = await Promise.all([
+            Post.findById(req.params.postId),
+            User.findById(req.user.id).select('-password'),
+        ]);
         if (!post) {
             res.status(400).json({ msg: 'Post not found!' });
         }
@@ -175,8 +178,7 @@ router.put('/likes/:postId', auth, async (req, res) => {
             receivers,
         });
         post.likes.unshift(newLike);
-        await newNotification.save();
-        await post.save();
+        await Promise.all([newNotification.save(), post.save()]);
         res.json(post.likes);
     } catch (error) {
         console.error(error);
